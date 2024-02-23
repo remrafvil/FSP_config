@@ -1,0 +1,53 @@
+version: '3'
+services:
+  graf_CXP:
+    image: grafana/grafana-oss:10.3.1
+    container_name: G_grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: $GRAFANA_ADMIN_USER
+      GF_SECURITY_ADMIN_PASSWORD: $GRAFANA_ADMIN_PASSWORD
+      GF_DATABASE_TYPE: mysql
+      GF_DATABASE_HOST: $CXP_IP_DOCKER_HOST:$CXP_MARIADB_PORT
+      GF_DATABASE_NAME: grafana
+      GF_DATABASE_USER: $GRAFANA_ADMIN_USER
+      GF_DATABASE_PASSWORD: $GRAFANA_ADMIN_PASSWORD
+    volumes:
+      - $CXP_PATH_DATA/g_grafana_data:/var/lib/grafana:rw # sudo chown jr grafana_data       sudo chmod 774 grafana_data/
+    restart: unless-stopped
+    ports:
+      - "$CXP_GRADANA_PORT:3000"
+    networks:
+      - grf_ntw
+  loki_CXP:
+    image: grafana/loki:2.9.0
+    container_name: G_loki
+    volumes:
+      - ./loki-local-config.yaml:/etc/loki/loki-local-config.yaml
+      - $CXP_PATH_DATA/g_loki_data:/loki
+    restart: unless-stopped
+    ports:
+      - "$CXP_LOKI_PORT:3100"
+    command: -config.file=/etc/loki/loki-local-config.yaml
+    networks:
+      - grf_ntw
+networks:
+  grf_ntw:
+    name: grf_net
+    driver: bridge
+
+
+# sudo docker compose -f grafana.yml up -d
+
+
+#    CREATE DATABASE grafana;
+#    CREATE USER 'tdfsp'@'%' IDENTIFIED BY 'lHevDgr_aqHDlBOpQirf28';
+#    GRANT ALL PRIVILEGES ON grafana.* TO 'tdfsp'@'%';
+#    FLUSH PRIVILEGES ;
+
+#   Si queremos configurar el archivo de configuracion, primero lo arrancamos normal y traemos el siguiente archivo
+#
+#     sudo docker cp a56bf63801b3:etc/grafana/grafana.ini .
+#
+#   Modificamos el archivo como necesitamos y lo llegamos a la ubicación
+#   Configuramos el siguiente volumen local
+#           - $CXP_PATH_CONFIG/grafana_config/grafana.ini:/etc/grafana/grafana.ini 

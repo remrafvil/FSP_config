@@ -1,0 +1,51 @@
+version: '3'
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: T_portainer
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - $CXP_PATH_DATA/pfh_port_data:/data
+    ports:
+      - 39443:9443
+      - $CXP_PORTAINER_PORT:8000
+    restart: unless-stopped
+    networks:
+      - pfh_ntw
+  filebrowser:
+    image: hurlenko/filebrowser
+    container_name: T_filebrowser
+    environment:
+      - UID=1000
+      - GID=1000
+      - TZ=$CXP_TZ
+    volumes:
+      - $CXP_PATH_FILEBROWSER:/data
+      - $CXP_PATH_DATA/pfh_filebro_data:/config
+    ports:
+      - $CXP_FILEBROWSER_PORT:8080
+    restart: unless-stopped
+    networks:
+      - pfh_ntw
+  heimdall:
+    image: lscr.io/linuxserver/heimdall:latest
+    container_name: T_heimdall
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=$CXP_TZ
+    volumes:
+      - $CXP_PATH_DATA/pfh_heim_data:/config
+    ports:
+      - $CXP_HEIMDALL_PORT:80
+    restart: unless-stopped
+    networks:
+      - pfh_ntw
+networks:
+  pfh_ntw:
+    name: pfh_net
+    driver: bridge
+# sudo docker compose -f porFilHei.yml up -d

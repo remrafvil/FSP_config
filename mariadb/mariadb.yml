@@ -1,0 +1,28 @@
+version: '3'
+services:
+  db_CXP:
+    image: mariadb:11.2
+    container_name: M_mdb_CXP
+    environment:
+      PUID: 1000
+      PGID: 100
+      TZ: $CXP_TZ
+      MARIADB_ROOT_PASSWORD: $CXP_MARIADB_ROOT_PASSWORD
+      MARIADB_DATABASE: $CXP_MARIADB_DATABASE
+      MARIADB_USER: $CXP_MARIADB_USER
+      MARIADB_PASSWORD: $CXP_MARIADB_PASSWORD    
+    volumes:
+      - $CXP_PATH_DATA/mdb_data:/var/lib/mysql
+    ports:
+      - "$CXP_MARIADB_PORT:3306"
+    restart: unless-stopped
+    networks:
+      - mdb_ntw
+networks:
+  mdb_ntw:
+    name: mdb_net
+    driver: bridge
+volumes:
+  mdb_data:
+
+# sudo docker compose -f mariadb.yml up -d

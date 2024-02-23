@@ -1,0 +1,120 @@
+version: '3'
+services:
+  ifx_CXP:
+    image: influxdb:2.7.5
+    container_name: I_ifx_FSP
+    environment:      
+      DOCKER_INFLUXDB_INIT_MODE: $CXP_INFLUXDB_INIT_MODE
+      DOCKER_INFLUXDB_INIT_HOST: $CXP_INFLUXDB_INIT_HOST
+      DOCKER_INFLUXDB_INIT_PORT: $CXP_INFLUXDB_PORT
+      DOCKER_INFLUXDB_INIT_USERNAME: $CXP_INFLUXDB_INIT_USERNAME
+      DOCKER_INFLUXDB_INIT_PASSWORD: $CXP_INFLUXDB_INIT_PASSWORD
+      DOCKER_INFLUXDB_INIT_ORG: $CXP_INFLUXDB_INIT_ORG
+      DOCKER_INFLUXDB_INIT_BUCKET: $CXP_INFLUXDB_INIT_BUCKET
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: $CXP_INFLUXDB_INIT_ADMIN_TOKEN
+#      INFLUXD_TLS_CERT: $INFLUXD_TLS_CERT
+#      INFLUXD_TLS_KEY: $INFLUXD_TLS_KEY
+    volumes:
+      # Mount for influxdb data directory and configuration
+      - $CXP_PATH_DATA/I_influxdb_data:/var/lib/influxdb2:rw
+      - ./ssl/influxdb-selfsigned.crt:/etc/ssl/influxdb-selfsigned.crt:rw
+      - ./ssl/influxdb-selfsigned.key:/etc/ssl/influxdb-selfsigned.key:rw
+    entrypoint: ["./entrypoint.sh"]
+    restart: unless-stopped
+    ports:
+      - "${CXP_INFLUXDB_PORT}:8086"
+#    logging:
+#      driver: loki
+#      options:
+#        loki-url: "http://$CXP_IP_DOCKER_HOST:$CXP_LOKI_PORT/loki/api/v1/push"
+    networks:
+      - ifx_ntw
+  # Use the telegraf to set up the communication. 
+  tlgf_CXP1:
+    image: telegraf:1.29.4
+    container_name: I_tlgf_FSP_TR12
+    environment:
+      DOCKER_INFLUXDB_INIT_HOST: $CXP_INFLUXDB_INIT_HOST
+      DOCKER_INFLUXDB_INIT_PORT: $CXP_INFLUXDB_PORT
+      DOCKER_INFLUXDB_INIT_ORG: $CXP_INFLUXDB_INIT_ORG
+      DOCKER_INFLUXDB_BUCKET: $INFLUXDB_BUCKET_FSP_TR
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: $CXP_INFLUXDB_INIT_ADMIN_TOKEN
+      AC500_IP_PLC: $INFLUXDB_AC500_IP_PLC_TR12
+    links:
+      - ifx_CXP
+    volumes:
+      # Mount for telegraf config
+      - $CXP_PATH_CONFIG/influxTelgraf/FSP_TR12_telegraf/:/etc/telegraf/
+      - /var/run/docker.sock:/var/run/docker.sock  
+    command: "--config /etc/telegraf/telegraf.conf --config-directory /etc/telegraf/telegraf.d"
+    restart: unless-stopped
+    networks:
+      - ifx_ntw
+  tlgf_CXP2:
+    image: telegraf:1.29.4
+    container_name: I_tlgf_FSP_TR34
+    environment:
+      DOCKER_INFLUXDB_INIT_HOST: $CXP_INFLUXDB_INIT_HOST
+      DOCKER_INFLUXDB_INIT_PORT: $CXP_INFLUXDB_PORT
+      DOCKER_INFLUXDB_INIT_ORG: $CXP_INFLUXDB_INIT_ORG
+      DOCKER_INFLUXDB_BUCKET: $INFLUXDB_BUCKET_FSP_TR
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: $CXP_INFLUXDB_INIT_ADMIN_TOKEN
+      AC500_IP_PLC: $INFLUXDB_AC500_IP_PLC_TR34
+    links:
+      - ifx_CXP
+    volumes:
+      # Mount for telegraf config
+      - $CXP_PATH_CONFIG/influxTelgraf/FSP_TR34_telegraf/:/etc/telegraf/
+      - /var/run/docker.sock:/var/run/docker.sock  
+    command: "--config /etc/telegraf/telegraf.conf --config-directory /etc/telegraf/telegraf.d"
+    restart: unless-stopped
+    networks:
+      - ifx_ntw
+  tlgf_CXP3:
+    image: telegraf:1.29.4
+    container_name: I_tlgf_FSP_TR50
+    environment:
+      DOCKER_INFLUXDB_INIT_HOST: $CXP_INFLUXDB_INIT_HOST
+      DOCKER_INFLUXDB_INIT_PORT: $CXP_INFLUXDB_PORT
+      DOCKER_INFLUXDB_INIT_ORG: $CXP_INFLUXDB_INIT_ORG
+      DOCKER_INFLUXDB_BUCKET: $INFLUXDB_BUCKET_FSP_TR
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: $CXP_INFLUXDB_INIT_ADMIN_TOKEN
+      AC500_IP_PLC: $INFLUXDB_AC500_IP_PLC_TR50
+    links:
+      - ifx_CXP
+    volumes:
+      # Mount for telegraf config
+      - $CXP_PATH_CONFIG/influxTelgraf/FSP_TR50_telegraf/:/etc/telegraf/
+      - /var/run/docker.sock:/var/run/docker.sock  
+    command: "--config /etc/telegraf/telegraf.conf --config-directory /etc/telegraf/telegraf.d"
+    restart: unless-stopped
+    networks:
+      - ifx_ntw
+  tlgf_CXP4:
+    image: telegraf:1.29.4
+    container_name: I_tlgf_FSP_L2
+    environment:
+      DOCKER_INFLUXDB_INIT_HOST: $CXP_INFLUXDB_INIT_HOST
+      DOCKER_INFLUXDB_INIT_PORT: $CXP_INFLUXDB_PORT
+      DOCKER_INFLUXDB_INIT_ORG: $CXP_INFLUXDB_INIT_ORG
+      DOCKER_INFLUXDB_BUCKET: $INFLUXDB_BUCKET_FSP_L2
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: $CXP_INFLUXDB_INIT_ADMIN_TOKEN
+      AC500_IP_PLC: $INFLUXDB_AC500_IP_PLC_L2
+    links:
+      - ifx_CXP
+    volumes:
+      # Mount for telegraf config
+      - $CXP_PATH_CONFIG/influxTelgraf/FSP_L2_telegraf/:/etc/telegraf/
+      - /var/run/docker.sock:/var/run/docker.sock  
+    command: "--config /etc/telegraf/telegraf.conf --config-directory /etc/telegraf/telegraf.d"
+    restart: unless-stopped
+    networks:
+      - ifx_ntw
+networks:
+  ifx_ntw:
+    name: ifx_net
+    driver: bridge
+volumes:
+  CXE_influxdb_vol:
+
+# sudo docker compose -f influxTelgraf.yml up -d

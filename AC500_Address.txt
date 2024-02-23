@@ -1,0 +1,73 @@
+#############################################################################
+#                                                                           #
+#                   TP-FSP-23-034 - Energy Management System                #
+#                                                                           #
+#############################################################################
+
+
+TR12    "tcp://172.21.1.11:502"
+
+    COM1
+            Address 11      ARE_TR1                                                     2000
+            Address 12      ARE_TR2                                                     2200
+
+    COM2
+            Address 21      ARE_Q17     Old Production Warehouse Aux Cabinet            4000
+            Address 22      ARE_Q18     Old Warehouse                                   4200
+            Address 23      ARE_Q26     Line 2 Dryer                                    4400
+            Address 24       
+
+    COM3
+            Address 31      ARE_Q22     Old Warehouse                                   6000
+            Address 32      ARE_Q23     Old Production Warehouse Lights and Plugs       6200
+            Address 33      ARE_Q24     Commpressor Kaiser                              6400
+            Address 34      ARE_Q34     Commpressor Sulaier                             6600
+
+
+
+TR34    tcp://172.21.1.31:502"
+
+    COM1
+            Address 11      ARE_TR3                                                     2000
+            Address 12      ARE_TR4                                                     2200
+
+    COM2
+            Address 21      ARE_Q06     L1 Mann Humel Dryer                             4000
+            Address 22      ARE_Q23     Grinder                                         4200
+            Address 23
+            Address 24       
+
+    COM3
+            Address 31
+            Address 32
+            Address 33 
+            Address 34 
+
+
+TR5    "tcp://172.21.1.51:502"
+
+    COM1
+            Address 11      ARE_TR5                                                     2000
+            Address 12      ARE_Q14                                                     2200
+            Address 13      ARE_Q15                                                     2400
+            Address 14      ARE_Q16                                                     2600
+            Address 15      ARE_Q17                                                     2800
+            Address 16      ARE_Q18                                                     3000
+
+    COM2
+            Address 21      ARE_QG      Main Breaker                                    4000
+            Address 22      ARE_Q01                                                     4200
+            Address 23      ARE_Q02                                                     4400
+            Address 24      ARE_Q03                                                     4600
+            Address 25      ARE_Q04                                                     4800
+            Address 26      ARE_Q05                                                     5000
+            Address 27      ARE_Q06                                                     5200
+            Address 28      ARE_Q07                                                     5400     
+
+    COM3
+            Address 31      ARE_Q08                                                     6000
+            Address 32      ARE_Q09                                                     6200
+            Address 33      ARE_Q10                                                     6400
+            Address 34      ARE_Q11                                                     6600
+            Address 35      ARE_Q12                                                     6800
+            Address 36      ARE_Q13                                                     7000 
