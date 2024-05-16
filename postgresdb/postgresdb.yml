@@ -1,0 +1,29 @@
+version: '3'
+services:
+  db_CXC:
+    image: postgres:16.2
+    container_name: P_pdb_CXP
+    environment:
+      PUID: 1000
+      PGID: 100
+      TZ: $CXP_TZ
+      POSTGRES_DB: $CXP_POSTGRESDB_DATABASE
+      POSTGRES_USER: $CXP_POSTGRESDB_USER
+      POSTGRES_PASSWORD: $CXP_POSTGRESDB_PASSWORD    
+    volumes:
+      - $CXP_PATH_DATA/pdb_data:/var/lib/postgresql/data
+    ports:
+      - "$CXP_POSTGRESDB_PORT:5432"
+    restart: unless-stopped
+    networks:
+      - pdb_ntw
+networks:
+  pdb_ntw:
+    name: pdb_net
+    driver: bridge
+volumes:
+  pdb_data:
+
+# sudo docker compose -f postgresdb.yml up -d
+
+
